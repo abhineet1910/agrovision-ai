@@ -99,14 +99,17 @@ Register (name, email, password) → password hashed with Werkzeug
       → every scan and chat message is tied to the logged-in user's ID
   → Log out → session cleared
 ```
-
 ## Testing
 
 ```bash
 pytest
 ```
 
-Covers auth (register/login/logout/protected-route redirect), models (password hashing, serialization, cascade deletes), and API routes (`/api/scan`, `/api/chat` — Gemini calls are mocked, so tests run without a real API key or network access).
+Covers:
+- Auth: register, login (valid/invalid), logout, protected-route redirect
+- Models: password hashing, `DiagnosisScan.to_dict()` shape, cascade deletes
+- API: `/api/scan` and `/api/chat` (Gemini calls are mocked, so tests don't need a
+  real API key or network access)
 
 ## Known Limitations
 
