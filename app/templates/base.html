@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}AgroVision - AI Smart Farming{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            green: {
+              50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e',
+              600: '#16a34a', 700: '#15803d', 900: '#14532d',
+            }
+          },
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          animation: { 'spin-slow': 'spin 3s linear infinite' }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .ease-spring { transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; opacity: 0; }
+    .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
+    .animate-slide-up { animation: slideUp 0.5s ease-out forwards; transform: translateY(20px); opacity: 0; }
+    .delay-100 { animation-delay: 100ms; } .delay-200 { animation-delay: 200ms; }
+    .delay-300 { animation-delay: 300ms; } .delay-500 { animation-delay: 500ms; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideUp { to { transform: translateY(0); opacity: 1; } }
+    @keyframes sway { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-20px); } }
+    @keyframes sway-slow { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-35px); } }
+    .animate-sway { animation: sway 6s ease-in-out infinite; }
+    .animate-sway-slow { animation: sway-slow 9s ease-in-out infinite; }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body class="bg-green-50 text-gray-900 transition-colors duration-300" data-theme-init="true">
+  <div id="root" class="min-h-screen transition-colors duration-500 ease-in-out">
+
+    <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-colors duration-500
+                bg-white/80 border-green-100 dark:bg-gray-900/80 dark:border-gray-800">
+      <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+        <a href="{{ url_for('dashboard.index') if current_user.is_authenticated else url_for('main.landing') }}"
+           class="flex items-center gap-2">
+          <div class="bg-green-600 p-1.5 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="text-white w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.3-.7-2.3-2.1-2.8-3.7 1.9-.6 3.4-.4 5.3.3z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.5 1-1 1.6-2.3 1.7-3.9-2.1-.2-3.7.6-4.9 1.4z"/></svg>
+          </div>
+          <span class="text-xl font-bold text-gray-900 dark:text-white tracking-tight">AgroVision</span>
+        </a>
+
+        <div class="flex items-center gap-6">
+          {% if current_user.is_authenticated %}
+            <div class="hidden md:flex gap-6 text-sm font-medium text-gray-600 dark:text-gray-300">
+              <a href="{{ url_for('dashboard.index') }}" class="hover:text-green-600 transition-colors {{ 'text-green-600' if request.endpoint == 'dashboard.index' }}">Dashboard</a>
+              <a href="{{ url_for('dashboard.crop_doctor') }}" class="hover:text-green-600 transition-colors {{ 'text-green-600' if request.endpoint == 'dashboard.crop_doctor' }}">Crop Doctor</a>
+              <a href="{{ url_for('dashboard.chat') }}" class="hover:text-green-600 transition-colors {{ 'text-green-600' if request.endpoint == 'dashboard.chat' }}">AI Chat</a>
+            </div>
+            <div class="flex items-center gap-3 pl-6 border-l border-gray-200 dark:border-gray-700">
+              <img src="{{ current_user.avatar_url or 'https://api.dicebear.com/7.x/initials/svg?seed=' ~ current_user.name }}"
+                   alt="User" class="w-8 h-8 rounded-full border border-gray-200 dark:border-gray-600" />
+              <a href="{{ url_for('auth.logout') }}" class="text-gray-500 hover:text-red-500 transition-colors" title="Log out">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              </a>
+            </div>
+          {% else %}
+            {% if request.endpoint != 'auth.login' %}
+              <a href="{{ url_for('auth.login') }}" class="text-sm font-bold text-green-600 hover:text-green-700">Log In</a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    <main class="pt-20 pb-20 min-h-screen">
+      <div class="max-w-7xl mx-auto px-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mt-4 space-y-2">
+              {% for category, message in messages %}
+                <div class="px-4 py-3 rounded-xl text-sm font-medium
+                            {{ 'bg-red-50 text-red-700 border border-red-200' if category == 'error'
+                               else 'bg-green-50 text-green-700 border border-green-200' if category == 'success'
+                               else 'bg-blue-50 text-blue-700 border border-blue-200' }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+
+    <!-- Theme Toggle - Floating Bottom Right -->
+    <div class="fixed bottom-6 right-6 z-50">
+      <button id="theme-toggle-btn"
+        class="relative flex items-center justify-center w-14 h-14 rounded-full shadow-xl
+               transition-all duration-500 ease-in-out transform hover:scale-110
+               bg-yellow-100 border-2 border-yellow-400 text-orange-500 shadow-yellow-500/50
+               dark:bg-indigo-900 dark:border-2 dark:border-indigo-700 dark:text-yellow-300 dark:shadow-indigo-900/50"
+        aria-label="Toggle Theme" title="Switch theme">
+        <div id="theme-toggle-icon" class="transition-transform duration-700 ease-spring">
+          <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+        <div class="absolute inset-0 rounded-full blur-md opacity-40 transition-colors duration-500 bg-yellow-400 dark:bg-indigo-500"></div>
+      </button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

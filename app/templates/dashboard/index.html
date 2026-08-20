@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+  <div>
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">Welcome back, {{ current_user.name.split(' ')[0] }} 👋</h2>
+    <p class="text-gray-500 dark:text-gray-400">Here's what's happening on your farm today.</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Latest Scan</h3>
+      {% if last_scan %}
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">{{ last_scan.disease_name }} · {{ last_scan.severity }} severity</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Scanned {{ last_scan.created_at.strftime('%b %d, %Y') }}</p>
+      {% else %}
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">No scans yet — upload a leaf photo to get started.</p>
+      {% endif %}
+      <a href="{{ url_for('dashboard.crop_doctor') }}"
+         class="inline-block bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-2 rounded-full text-sm font-bold hover:opacity-90 transition-opacity">
+        New Scan
+      </a>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Ask Agri-Chat</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Get instant answers on irrigation, pests, and fertilizer timing.</p>
+      <a href="{{ url_for('dashboard.chat') }}"
+         class="inline-block bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-2 rounded-full text-sm font-bold hover:opacity-90 transition-opacity">
+        Open Chat
+      </a>
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Rainfall Forecast (Next 7 Days)</h3>
+    <p class="text-xs text-gray-400 dark:text-gray-500 mb-2">Sample forecast data — not yet wired to a live weather feed.</p>
+    <div class="h-64 w-full">
+      <canvas id="rainfall-chart"></canvas>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script>
+  const weather = {{ weather | tojson }};
+  const ctx = document.getElementById('rainfall-chart').getContext('2d');
+  const isDark = document.documentElement.classList.contains('dark');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: weather.map(w => w.day),
+      datasets: [{
+        label: 'Rain chance (%)',
+        data: weather.map(w => w.rainChance),
+        borderColor: '#22c55e',
+        backgroundColor: 'rgba(34,197,94,0.1)',
+        tension: 0.4,
+        pointBackgroundColor: '#22c55e',
+        pointBorderColor: '#fff',
+        pointRadius: 4,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { ticks: { color: isDark ? '#9CA3AF' : '#6B7280' }, grid: { display: false } },
+        x: { ticks: { color: isDark ? '#9CA3AF' : '#6B7280' }, grid: { display: false } },
+      }
+    }
+  });
+</script>
+{% endblock %}
