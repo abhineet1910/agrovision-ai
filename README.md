@@ -2,6 +2,7 @@
 
 An AI-powered crop health assistant for farmers: upload a photo of a crop leaf and get an instant disease diagnosis with a treatment and fertilizer plan, plus a farming Q&A chat assistant — both powered by Google Gemini's multimodal API.
 
+
 ## Features
 
 - **Real authentication** — register / log in / log out with hashed passwords (Werkzeug) and session-based auth (Flask-Login)
@@ -10,6 +11,11 @@ An AI-powered crop health assistant for farmers: upload a photo of a crop leaf a
 - **Dashboard** — latest scan summary plus a 7-day rainfall chart (Chart.js). The rainfall data is mock data, clearly labeled as such in the UI
 - **Dark mode toggle** — floating button with a spring-easing rotation animation, persisted via `localStorage`
 - **Placeholder pages** for Calendar, Weather, Profile, and Admin, clearly marked "Coming Soon" rather than left broken
+
+## AI / LLM
+
+**Provider: Google Gemini** (`google-generativeai` SDK), because:
+- It has a genuine free tier.
 
 ## Tech Stack
 
