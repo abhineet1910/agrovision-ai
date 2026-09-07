@@ -123,15 +123,4 @@ Covers:
 - **Calendar, Weather, Profile, and Admin are placeholder pages** — marked "Coming Soon" rather than left broken or removed.
 - **Free-tier rate limits**: Gemini's free tier has request-per-minute/day limits. If hit, the diagnosis/chat calls raise a handled error and the frontend shows a friendly "temporarily unavailable" message rather than crashing.
 
-## Deployment
-
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin <your-repo-url>
-git push -u origin main
-```
-
 `.env`, `instance/`, `*.db`, and `.venv/` are already in `.gitignore` — no secrets or local database files will be committed.
